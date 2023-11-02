@@ -9,6 +9,8 @@ experiments/*
 !doc/images/**/*.png
 !experiments/.gitkeep
 
+updated_pvae_env/
+
 ## OS X
 .DS_Store
 
