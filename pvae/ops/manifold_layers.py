@@ -48,6 +48,8 @@ class GeodesicLayer(RiemannianLayer):
         super(GeodesicLayer, self).__init__(in_features, out_features, manifold, over_param, weight_norm)
 
     def forward(self, input):
+        if input.ndim == 2:
+            input = input.unsqueeze(0)
         input = input.unsqueeze(-2).expand(*input.shape[:-(len(input.shape) - 2)], self.out_features, self.in_features)
         res = self.manifold.normdist2plane(input, self.bias, self.weight,
                                                signed=True, norm=self.weight_norm)
