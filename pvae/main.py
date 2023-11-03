@@ -24,10 +24,10 @@ parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
 
 ### General
 parser.add_argument('--save-dir', type=str, default='')
-parser.add_argument('--model', type=str, metavar='M', help='model name')
-parser.add_argument('--manifold', type=str, default='PoincareBall', choices=['Euclidean', 'PoincareBall'])
+parser.add_argument('--model', type=str, metavar='M', help='model name', default='mnist')
+parser.add_argument('--manifold', type=str, default='Euclidean', choices=['Euclidean', 'PoincareBall'])
 parser.add_argument('--name', type=str, default='.', help='experiment name (default: None)')
-parser.add_argument('--save-freq', type=int, default=0, help='print objective values every value (if positive)')
+parser.add_argument('--save-freq', type=int, default=20, help='print objective values every value (if positive)')
 parser.add_argument('--skip-test', action='store_true', default=False, help='skip test dataset computations')
 
 ### Dataset
@@ -39,11 +39,11 @@ parser.add_argument('--iwae-samples', type=int, default=0, help='number of sampl
 
 ### Optimisation
 parser.add_argument('--obj', type=str, default='vae', help='objective to minimise (default: vae)')
-parser.add_argument('--epochs', type=int, default=50, metavar='E', help='number of epochs to train (default: 50)')
-parser.add_argument('--batch-size', type=int, default=64, metavar='N', help='batch size for data (default: 64)')
+parser.add_argument('--epochs', type=int, default=100, metavar='E', help='number of epochs to train (default: 50)')
+parser.add_argument('--batch-size', type=int, default=128, metavar='N', help='batch size for data (default: 64)')
 parser.add_argument('--beta1', type=float, default=0.9, help='first parameter of Adam (default: 0.9)')
 parser.add_argument('--beta2', type=float, default=0.999, help='second parameter of Adam (default: 0.900)')
-parser.add_argument('--lr', type=float, default=1e-4, help='learnign rate for optimser (default: 1e-4)')
+parser.add_argument('--lr', type=float, default=1e-5, help='learnign rate for optimser (default: 1e-4)')
 
 ## Objective
 parser.add_argument('--K', type=int, default=1, metavar='K',  help='number of samples to estimate ELBO (default: 1)')
@@ -51,29 +51,29 @@ parser.add_argument('--beta', type=float, default=1.0, metavar='B', help='coeffi
 parser.add_argument('--analytical-kl', action='store_true', default=False, help='analytical kl when possible')
 
 ### Model
-parser.add_argument('--latent-dim', type=int, default=10, metavar='L', help='latent dimensionality (default: 10)')
-parser.add_argument('--c', type=float, default=1., help='curvature')
-parser.add_argument('--posterior', type=str, default='WrappedNormal', help='posterior distribution',
+parser.add_argument('--latent-dim', type=int, default=2, metavar='L', help='latent dimensionality (default: 10)')
+parser.add_argument('--c', type=float, default=0.7, help='curvature')
+parser.add_argument('--posterior', type=str, default='Normal', help='posterior distribution',
                     choices=['WrappedNormal', 'RiemannianNormal', 'Normal'])
 
 ## Architecture
-parser.add_argument('--num-hidden-layers', type=int, default=1, metavar='H', help='number of hidden layers in enc and dec (default: 1)')
-parser.add_argument('--hidden-dim', type=int, default=100, help='number of hidden layers dimensions (default: 100)')
+parser.add_argument('--num-hidden-layers', type=int, default=3, metavar='H', help='number of hidden layers in enc and dec (default: 1)')
+parser.add_argument('--hidden-dim', type=int, default=400, help='number of hidden layers dimensions (default: 100)')
 parser.add_argument('--nl', type=str, default='ReLU', help='non linearity')
 parser.add_argument('--enc', type=str, default='Wrapped', help='allow to choose different implemented encoder',
                     choices=['Linear', 'Wrapped', 'Mob'])
 parser.add_argument('--dec', type=str, default='Wrapped', help='allow to choose different implemented decoder',
-                    choices=['Linear', 'Wrapped', 'Geo', 'Mob'])
+                    choices=['Linear', 'Wrapped', 'Geo', 'Mob']) # Was Wrappped
 
 ## Prior
 parser.add_argument('--prior-iso', action='store_true', default=False, help='isotropic prior')
-parser.add_argument('--prior', type=str, default='WrappedNormal', help='prior distribution',
+parser.add_argument('--prior', type=str, default='Normal', help='prior distribution',
                     choices=['WrappedNormal', 'RiemannianNormal', 'Normal'])
 parser.add_argument('--prior-std', type=float, default=1., help='scale stddev by this value (default:1.)')
 parser.add_argument('--learn-prior-std', action='store_true', default=False)
 
 ### Technical
-parser.add_argument('--no-cuda', action='store_true', default=False, help='disables CUDA use')
+parser.add_argument('--no-cuda', action='store_true', default=False, help='disables CUDA use') # Was False
 parser.add_argument('--seed', type=int, default=0, metavar='S', help='random seed (default: 1)')
 
 args = parser.parse_args()
