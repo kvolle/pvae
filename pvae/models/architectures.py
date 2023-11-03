@@ -81,7 +81,7 @@ class DecWrapped(nn.Module):
     def forward(self, z):
         z = self.manifold.logmap0(z)
         d = self.dec(z)
-        mu = F.softplus(self.fc31(d).view(*z.size()[:-1], *self.data_size))  # reshape data
+        mu = F.sigmoid(self.fc31(d).view(*z.size()[:-1], *self.data_size))  # reshape data
         return mu, torch.ones_like(mu)
 
 
