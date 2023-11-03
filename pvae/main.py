@@ -78,7 +78,8 @@ parser.add_argument('--seed', type=int, default=0, metavar='S', help='random see
 
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
-device = torch.device("cuda" if args.cuda else "cpu")
+device = torch.device("cuda" if args.cuda and torch.cuda.is_available() else "cpu")
+print(device)
 args.prior_iso = args.prior_iso or args.posterior == 'RiemannianNormal'
 
 # Choosing and saving a random seed for reproducibility
@@ -132,7 +133,6 @@ def train(epoch, agg):
         b_loss += loss.item()
         b_recon += -lik.mean(0).sum().item()
         b_kl += kl.sum(-1).mean(0).sum().item()
-
     agg['train_loss'].append(b_loss / len(train_loader.dataset))
     agg['train_recon'].append(b_recon / len(train_loader.dataset))
     agg['train_kl'].append(b_kl / len(train_loader.dataset))
@@ -172,5 +172,5 @@ if __name__ == '__main__':
             save_model(model, runPath + '/model.rar')
             save_vars(agg, runPath + '/losses.rar')
 
-        print('p(z) params:')
-        print(model.pz_params)
+        #print('p(z) params:')
+        #print(model.pz_params)
