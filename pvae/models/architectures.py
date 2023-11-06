@@ -62,8 +62,9 @@ class EncWrapped(nn.Module):
     def forward(self, x):
         e = self.enc(x.view(*x.size()[:-len(self.data_size)], -1))
         mu = self.fc21(e)          # flatten data
+        scale = F.softplus(self.fc22(e)) + Constants.eta
         mu = self.manifold.expmap0(mu)
-        return mu, F.softplus(self.fc22(e)) + Constants.eta,  self.manifold
+        return mu, scale,  self.manifold
 
 
 class DecWrapped(nn.Module):
