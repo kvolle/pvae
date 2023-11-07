@@ -15,9 +15,14 @@ def vae_objective(model, x, K=1, beta=1.0, components=False, analytical_kl=False
     kld = dist.kl_divergence(qz_x, pz).unsqueeze(0).sum(-1) if \
         has_analytic_kl(type(qz_x), model.pz) and analytical_kl else \
         qz_x.log_prob(zs).sum(-1) - pz.log_prob(zs).sum(-1)
+    mu = qz_x.loc
+    logvar = qz_x.scale
 
-    obj = -lpx_z.mean(0).sum() + beta * kld.mean(0).sum()
-    return (qz_x, px_z, lpx_z, kld, obj) if components else obj
+    kld2 = -0.5 * torch.sum( 1 + logvar - mu.pow(2) - logvar.exp())
+    #print(kld.sum().item(), kld2.item())
+    #obj = -lpx_z.mean(0).sum() + beta * kld.mean(0).sum()
+    obj = -lpx_z.mean(0).sum() + beta * kld2
+    return (qz_x, px_z, lpx_z, kld2, obj) if components else obj
 
 
 def _iwae_objective_vec(model, x, K):
